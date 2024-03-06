@@ -16,10 +16,22 @@ fn main() -> std::io::Result<()>{
         if element == "-R"
         {
             // dont add a "/" to the front of the path argument
+            let path: String = String::from("input/car.tga"); // remind: mut it
+
+            let bytes = fs::read(path).unwrap();
             let contents = fs::read_to_string("input/poem.txt").expect("Should have been able to read the file");
             print!("{}", contents);
             println!("{element}");
- 
+            let mut vec: Vec<u8> = Vec::new();
+            for byte_pair in bytes.chunks_exact(1)
+            {
+                let short = u8::from_le_bytes([byte_pair[0]]);
+                vec.push(short);
+                print!("{:x} ", short);
+            }
+            println!(" ");
+            // this is the data
+            println!("{}", vec[0]);
             // Prints the current working dir
             let path = env::current_dir()?;
             print!("{}", path.display());
