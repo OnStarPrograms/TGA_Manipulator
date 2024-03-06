@@ -11,14 +11,15 @@ fn main() -> std::io::Result<()>{
     // println!("Successfully changed working directory to {}!", root.display());
     // assert!(env::set_current_dir(&root).is_ok());
     // Fuck dude this was difficult just to read a txt file but I finally did it
-    for element in args.iter() {
+    for element in args.iter() 
+    {
         if element == "-R"
         {
             // dont add a "/" to the front of the path argument
             let contents = fs::read_to_string("input/poem.txt").expect("Should have been able to read the file");
             print!("{}", contents);
             println!("{element}");
-
+ 
             // Prints the current working dir
             let path = env::current_dir()?;
             print!("{}", path.display());
