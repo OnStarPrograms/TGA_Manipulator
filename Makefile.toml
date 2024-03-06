@@ -17,10 +17,15 @@ command = "cargo"
 args = ["test"]
 dependencies = ["clean"]
 
+[tasks.run]
+command = "cargo"
+args = ["run", "--", "-R"]
+
 [tasks.my-flow]
 dependencies = [
     "format",
     "build",
-    "test"
+    "test",
+    "run"
 ]
 
