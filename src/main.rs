@@ -15,7 +15,7 @@ struct MyStruct {
     bar: u8,
     car: u8,
 }
-// -R; -C; -F; -T; -M; -S; -N;
+// -R; -C; -F; -T; -M; -S; -N; -O; -Test;
 fn main() -> std::io::Result<()>{
     //CLI Argument line
     let args: Vec<String> = env::args().collect();
@@ -283,6 +283,51 @@ fn main() -> std::io::Result<()>{
             println!("{:?}", my_struct);
         }
 
+        if element == "-O"
+        {
+            let path: String = String::from(&args[i+1]);
+            // let mut path: String = String::new();
+            // io::stdin().read_line(&mut path).expect("failed to read line.");  
+            let bytes = fs::read(path).unwrap(); 
+            let mut vec: Vec<u8> = Vec::new();
+            for byte_pair in bytes.chunks_exact(1)
+            {
+                let short = u8::from_le_bytes([byte_pair[0]]);
+                vec.push(short);
+            }
+
+            let path: String = String::from(&args[i+2]);
+            // let mut path: String = String::new();
+            // io::stdin().read_line(&mut path).expect("failed to read line.");  
+            let bytes = fs::read(path).unwrap(); 
+            let mut filter: Vec<u8> = Vec::new();
+            for byte_pair in bytes.chunks_exact(1)
+            {
+                let short = u8::from_le_bytes([byte_pair[0]]);
+                filter.push(short);
+            }
+
+
+            let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+            assert!(head.is_empty(), "Data was not aligned");
+            let my_struct = body[0];
+
+            println!("{:?}", my_struct);
+            println!(" ");
+            for _i in 0..18
+            {
+                vec.remove(0);
+                filter.remove(0);
+            }
+            println!("original Vec 0: {}", vec[0]);
+            println!("filter Vec 0: {}", filter[0]);
+            //image data starts at "vec[18]"
+            let vec = overlay(vec, filter);
+            println!("Done Overlay \n New Vec 0: {}", vec[0]);
+            println!("{:?}", my_struct);
+        }
+
+
 
 
 
@@ -329,13 +374,13 @@ fn main() -> std::io::Result<()>{
             // Used to write the header struct
 
 	        write_file.write_all(&[my_struct.id, my_struct.color_map, my_struct.image_type])?;
-            write_file.write_all(&my_struct.color_origin.to_be_bytes())?;
-            write_file.write_all(&my_struct.color_map_length.to_be_bytes())?;
+            write_file.write_all(&my_struct.color_origin.to_le_bytes())?;
+            write_file.write_all(&my_struct.color_map_length.to_le_bytes())?;
             write_file.write_all(&[my_struct.color_map_depth])?;
             write_file.write_all(&my_struct.x_origin.to_be_bytes())?;
             write_file.write_all(&my_struct.y_origin.to_be_bytes())?;
-            write_file.write_all(&my_struct.width.to_be_bytes())?;
-            write_file.write_all(&my_struct.height.to_be_bytes())?;
+            write_file.write_all(&my_struct.width.to_le_bytes())?;
+            write_file.write_all(&my_struct.height.to_le_bytes())?;
             write_file.write_all(&[my_struct.pixel_depth, my_struct.image_descriptor])?;
             //my_struct.color_origin.to_be_bytes()
 
@@ -363,8 +408,116 @@ fn main() -> std::io::Result<()>{
 
 
         }
+
+
+
+        //Tests two .tga Files completely
+        if element == "-Test"
+        {
+            let path: String = String::from(&args[i+1]);
+            // let mut path: String = String::new();
+            // io::stdin().read_line(&mut path).expect("failed to read line.");  
+            let bytes = fs::read(path).unwrap(); 
+            let mut vec: Vec<u8> = Vec::new();
+            for byte_pair in bytes.chunks_exact(1)
+            {
+                let short = u8::from_le_bytes([byte_pair[0]]);
+                vec.push(short);
+            }
+
+            let path: String = String::from(&args[i+2]);
+            // let mut path: String = String::new();
+            // io::stdin().read_line(&mut path).expect("failed to read line.");  
+            let bytes = fs::read(path).unwrap(); 
+            let mut filter: Vec<u8> = Vec::new();
+            for byte_pair in bytes.chunks_exact(1)
+            {
+                let short = u8::from_le_bytes([byte_pair[0]]);
+                filter.push(short);
+            }
+
+
+            // let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+            // assert!(head.is_empty(), "Data was not aligned");
+            // let my_struct = body[0];
+
+            // println!("{:?}", my_struct);
+            // println!(" ");
+            // for _i in 0..18
+            // {
+            //     vec.remove(0);
+            //     filter.remove(0);
+            // }
+            println!("original Vec 0: {}", vec[0]);
+            println!("filter Vec 0: {}", filter[0]);
+            //image data starts at "vec[18]"
+            let vec = test(vec, filter);
+            if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+            {
+                println!("Files are the same");
+            }
+            else 
+            {
+                println!("Error at");
+                println!("index: {}", vec.0);
+                println!("base: {:x}", vec.1);
+                println!("top: {:x}", vec.2);
+            }
+            println!("");
+            // println!("{:?}", my_struct);
+        }
         i += 1;
     }
+            // let path: String = String::from("input/car.tga");
+            // // let mut path: String = String::new();
+            // // io::stdin().read_line(&mut path).expect("failed to read line.");  
+            // let bytes = fs::read(path).unwrap(); 
+            // let mut vec: Vec<u8> = Vec::new();
+            // for byte_pair in bytes.chunks_exact(1)
+            // {
+            //     let short = u8::from_le_bytes([byte_pair[0]]);
+            //     vec.push(short);
+            // }
+
+            // let path: String = String::from("output/test.tga");
+            // // let mut path: String = String::new();
+            // // io::stdin().read_line(&mut path).expect("failed to read line.");  
+            // let bytes = fs::read(path).unwrap(); 
+            // let mut filter: Vec<u8> = Vec::new();
+            // for byte_pair in bytes.chunks_exact(1)
+            // {
+            //     let short = u8::from_le_bytes([byte_pair[0]]);
+            //     filter.push(short);
+            // }
+
+
+            // // let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+            // // assert!(head.is_empty(), "Data was not aligned");
+            // // let my_struct = body[0];
+
+            // // println!("{:?}", my_struct);
+            // // println!(" ");
+            // // for _i in 0..18
+            // // {
+            // //     vec.remove(0);
+            // //     filter.remove(0);
+            // // }
+            // println!("original Vec 0: {}", vec[0]);
+            // println!("filter Vec 0: {}", filter[0]);
+            // //image data starts at "vec[18]"
+            // let vec = test(vec, filter);
+            // if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+            // {
+            //     println!("Files are the same");
+            // }
+            // else 
+            // {
+            //     println!("Error at");
+            //     println!("index: {}", vec.0);
+            //     println!("base: {:x}", vec.1);
+            //     println!("top: {:x}", vec.2);
+            // }
+            // println!("");
 
     // Everything is a-OK
     Ok(())
@@ -372,7 +525,21 @@ fn main() -> std::io::Result<()>{
 }
 
 
-
+fn test(base: Vec<u8>, top: Vec<u8>) -> (usize, u8, u8)
+{
+    let mut k = 0;
+    for i in &base
+    {
+        let _mi = *i;
+        let _mj = top[k];
+        if top[k] != *i
+        {
+            return (k, *i, top[k]);
+        }
+        k += 1;
+    }
+    return (0, 1, 1);
+}
 
 
 
