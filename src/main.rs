@@ -184,7 +184,7 @@ fn main() -> std::io::Result<()>{
             println!("original Vec 0: {}", vec[0]);
             println!("filter Vec 0: {}", filter[0]);
             //image data starts at "vec[18]"
-            let vec = multiply(vec, filter);
+            let vec = header::multiply(vec, filter);
             println!("Done Multiplying \n New Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
         }
@@ -231,7 +231,7 @@ fn main() -> std::io::Result<()>{
             println!("original Vec 0: {}", vec[0]);
             println!("filter Vec 0: {}", filter[0]);
             //image data starts at "vec[18]"
-            let vec = sub(vec, filter);
+            let vec = header::sub(vec, filter);
             println!("Done Subtracting \n New Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
         }
@@ -278,7 +278,7 @@ fn main() -> std::io::Result<()>{
             println!("original Vec 0: {}", vec[0]);
             println!("filter Vec 0: {}", filter[0]);
             //image data starts at "vec[18]"
-            let vec = screen(vec, filter);
+            let vec = header::screen(vec, filter);
             println!("Done Screen \n New Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
         }
@@ -322,7 +322,7 @@ fn main() -> std::io::Result<()>{
             println!("original Vec 0: {}", vec[0]);
             println!("filter Vec 0: {}", filter[0]);
             //image data starts at "vec[18]"
-            let vec = overlay(vec, filter);
+            let vec = header::overlay(vec, filter);
             println!("Done Overlay \n New Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
         }
@@ -367,45 +367,7 @@ fn main() -> std::io::Result<()>{
             // let contents = String::from(stringify!(my_struct.id));
             
             // Creates a new File
-            let mut write_file = File::create("output/test.tga").unwrap();
-            
-            // let mut file = File::open("output/test.tga")?;
-
-            // Used to write the header struct
-
-	        write_file.write_all(&[my_struct.id, my_struct.color_map, my_struct.image_type])?;
-            write_file.write_all(&my_struct.color_origin.to_le_bytes())?;
-            write_file.write_all(&my_struct.color_map_length.to_le_bytes())?;
-            write_file.write_all(&[my_struct.color_map_depth])?;
-            write_file.write_all(&my_struct.x_origin.to_be_bytes())?;
-            write_file.write_all(&my_struct.y_origin.to_be_bytes())?;
-            write_file.write_all(&my_struct.width.to_le_bytes())?;
-            write_file.write_all(&my_struct.height.to_le_bytes())?;
-            write_file.write_all(&[my_struct.pixel_depth, my_struct.image_descriptor])?;
-            //my_struct.color_origin.to_be_bytes()
-
-
-        /*/////////////////////////////////////////////////////////////////// */
-            // used to write in the image data
-            let mut writer = BufWriter::new(&write_file);
-
-            // //Writes the actual Data
-            let io_buf = IoSlice::new(&vec);
-
-            writer.write_vectored(&[io_buf]).unwrap();
-
-        /*////////////////////////////////////////////////////////////////// */
-            
-            //Writes the Header data in a Vec into the file *Need to figure out how to write a struct into the file*
-            // let io_buf = IoSlice::new(&my_struct.id.to_be_bytes());
-
-            // writer.write_vectored(&[io_buf]).unwrap();
-
-
-            //Given the Header Struct "my_struct" and image data "vec";
-            //Write it into a new file and save it to the output folder
-            /* \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ */
-
+            write_file(vec, my_struct, "output/test.tga").unwrap();
 
         }
 
@@ -451,7 +413,7 @@ fn main() -> std::io::Result<()>{
             println!("original Vec 0: {}", vec[0]);
             println!("filter Vec 0: {}", filter[0]);
             //image data starts at "vec[18]"
-            let vec = test(vec, filter);
+            let vec = header::test(vec, filter);
             if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
             {
                 println!("Files are the same");
@@ -525,178 +487,44 @@ fn main() -> std::io::Result<()>{
 }
 
 
-fn test(base: Vec<u8>, top: Vec<u8>) -> (usize, u8, u8)
+
+
+fn write_file(vec: Vec<u8>, my_struct: Header, output: &str) -> std::io::Result<()>
 {
-    let mut k = 0;
-    for i in &base
-    {
-        let _mi = *i;
-        let _mj = top[k];
-        if top[k] != *i
-        {
-            return (k, *i, top[k]);
-        }
-        k += 1;
-    }
-    return (0, 1, 1);
-}
+    //image data starts at "vec[18]"
+    println!("Vec 0: {}", vec[0]);
+    println!("{:?}", my_struct);
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+            
+    // Creates a new File
+    let mut write_file = File::create(output).unwrap();
+            
+    // let mut file = File::open("output/test.tga")?;
+
+    // Used to write the header struct
+
+    write_file.write_all(&[my_struct.id, my_struct.color_map, my_struct.image_type])?;
+    write_file.write_all(&my_struct.color_origin.to_le_bytes())?;
+    write_file.write_all(&my_struct.color_map_length.to_le_bytes())?;
+    write_file.write_all(&[my_struct.color_map_depth])?;
+    write_file.write_all(&my_struct.x_origin.to_be_bytes())?;
+    write_file.write_all(&my_struct.y_origin.to_be_bytes())?;
+    write_file.write_all(&my_struct.width.to_le_bytes())?;
+    write_file.write_all(&my_struct.height.to_le_bytes())?;
+    write_file.write_all(&[my_struct.pixel_depth, my_struct.image_descriptor])?;
+    //my_struct.color_origin.to_be_bytes()
 
 
+/*/////////////////////////////////////////////////////////////////// */
+    // used to write in the image data
+    let mut writer = BufWriter::new(&write_file);
 
+    // //Writes the actual Data
+    let io_buf = IoSlice::new(&vec);
 
-fn multiply(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
-{
-    let mut i = 0;
-    for byte_pair in top.chunks_exact(3)
-    {
-        let redf = byte_pair[0];
-        let redl1 = base[i];
-        let greenf = byte_pair[1];
-        let greenl1 = base[i+1];
-        let bluef = byte_pair[2];
-        let bluel1 = base[i+2];
-        let mut check255: f32;
+    writer.write_vectored(&[io_buf]).unwrap();
 
-        check255 = (redl1 as f32 / 255.) * (redf as f32 / 255.);
-        base[i] = (check255 * 255. + 0.5) as u8;
-
-        check255 = (greenl1 as f32 / 255.) * (greenf as f32 / 255.);
-        base[i+1] = (check255 * 255. + 0.5) as u8;
-
-        check255 = (bluel1 as f32 / 255.) * (bluef as f32 / 255.);
-        base[i+2] = (check255 * 255. + 0.5) as u8;
-
-        i+=3;
-    }
-
-    return base;
-}
-
-fn screen(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
-{
-    let mut i = 0;
-    for byte_pair in top.chunks_exact(3)
-    {
-        let redf = byte_pair[0];
-        let redl1 = base[i];
-        let greenf = byte_pair[1];
-        let greenl1 = base[i+1];
-        let bluef = byte_pair[2];
-        let bluel1 = base[i+2];
-        let mut check255: f32;
-
-        check255 = 1.0 - (1.0 - (redl1 as f32 / 255.)) * (1.0 - (redf as f32 / 255.));
-        base[i] = (check255 * 255. + 0.5) as u8;
-
-        check255 = 1.0 - (1.0 - (greenl1 as f32 / 255.)) * (1.0 - (greenf as f32 / 255.));
-        base[i+1] = (check255 * 255. + 0.5) as u8;
-
-        check255 = 1.0 - (1.0 - (bluel1 as f32 / 255.)) * (1.0 - (bluef as f32 / 255.));
-        base[i+2] = (check255 * 255. + 0.5) as u8;
-
-        i+=3;
-    }
-
-    return base;
-}
-
-fn sub(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
-{
-    let mut i = 0;
-    for byte_pair in top.chunks_exact(3)
-    {
-        let redf = byte_pair[0];
-        let redl1 = base[i];
-        let greenf = byte_pair[1];
-        let greenl1 = base[i+1];
-        let bluef = byte_pair[2];
-        let bluel1 = base[i+2];
-        let mut check255: i32;
-
-        check255 = (redl1 as i32) - (redf as i32);
-        if check255 < 0
-        {
-            base[i] = 0;
-        }
-        else
-        {
-            base[i] = (check255) as u8;
-        }
-
-        check255 = (greenl1 as i32) - (greenf as i32);
-        if check255 < 0
-        {
-            base[i+1] = 0;
-        }
-        else
-        {
-            base[i+1] = (check255) as u8;
-        }
-
-        check255 = (bluel1 as i32) - (bluef as i32);
-        if check255 < 0
-        {
-            base[i+2] = 0;
-        }
-        else
-        {
-            base[i+2] = (check255) as u8;
-        }
-
-        i+=3;
-    }
-    return base;
-}
-
-fn overlay(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
-{
-    let mut i = 0;
-    for overlayer in top.chunks_exact(3)
-    {
-        let blueb = base[i];
-        let bluef = overlayer[0];
-        let greenb = base[i+1];
-        let greenf = overlayer[1];
-        let redb = base[i+2];
-        let redf = overlayer[2];
-
-        let mut check255: f32;
-
-        if (blueb as f32 / 255.) > 0.5
-        {
-            check255 = 1.0 - 2. * (1.0 - (blueb as f32 / 255.)) * (1.0 - (bluef as f32 / 255.));
-        }
-        else
-        {
-            check255 = 2. * (blueb as f32 / 255.) * (bluef as f32 / 255.);
-        }
-        base[i] = (check255 * 255. + 0.5) as u8;
-
-
-
-        if (greenb as f32 / 255.) > 0.5
-        {
-            check255 = 1.0 - 2.0 * (1.0 - (greenb as f32 / 255.)) * (1.0 - (greenf as f32 / 255.));
-        }
-        else
-        {
-            check255 = 2. * (greenb as f32 / 255.) * (greenf as f32 / 255.);
-        }
-        base[i+1] = (check255 * 255. + 0.5) as u8;
-
-
-
-        if (redb as f32 / 255.) > 0.5
-        {
-            check255 = 1.0 - 2.0 * (1.0 - (redb as f32 / 255.)) * (1.0 - (redf as f32 / 255.));
-        }
-        else
-        {
-            check255 = 2. * (redb as f32 / 255.) * (redf as f32 / 255.);
-        }
-        base[i+2] = (check255 * 255. + 0.5) as u8;
-
-        i+=3;
-    }
-    return base;
+    Ok(())
 }
