@@ -1,7 +1,10 @@
 mod header; //used to import a local file
 
 use std::env;
+
 use std::fs;
+use std::fs::File;
+use std::io::{BufWriter, IoSlice, Write};
 use header::Header;
 // use std::io;
 // use std::path::Path;
@@ -21,7 +24,6 @@ fn main() -> std::io::Result<()>{
     // let root = Path::new("../../");
     // println!("Successfully changed working directory to {}!", root.display());
     // assert!(env::set_current_dir(&root).is_ok());
-    // Fuck dude this was difficult just to read a txt file but I finally did it
     let mut i = 0;
     for element in args.iter() 
     {
@@ -53,6 +55,7 @@ fn main() -> std::io::Result<()>{
         // plan to Use to call a change function format CLI {cargo run -- -C input/file1 input/file2 manipulator}
         // need to build this pls
         // currently can only do (cargo run -- -C input/file1)
+        //Pulls and prints one image data plus pointer
         if element == "-C"
         {
             let path: String = String::from(&args[i+1]);
@@ -69,6 +72,9 @@ fn main() -> std::io::Result<()>{
             println!(" ");
             print!("{:p} : {:x}", &vec[0], &vec[0]);
         }
+
+
+        //Writes image data into a struct
         if element == "-F"
         {
             let path: String = String::from(&args[i+1]);
@@ -119,6 +125,9 @@ fn main() -> std::io::Result<()>{
             //image data starts at "vec[18]"
             print!("{:p} : {:x}", &vec[0], &vec[0]);
         }
+
+
+        //Test Writing data into a struct
         if element == "-T"
         {
             let v: Vec<u8> = vec![5, 2, 3];
@@ -132,6 +141,10 @@ fn main() -> std::io::Result<()>{
             println!("{:?}", my_struct);
             println!("{:?}", head);
         }
+
+
+
+        //Multiplies 2 files
         if element == "-M"
         {
             let path: String = String::from(&args[i+1]);
@@ -175,6 +188,10 @@ fn main() -> std::io::Result<()>{
             println!("Done Multiplying \n New Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
         }
+
+
+
+        //Subtracts two Files
         if element == "-S"
         {
             let path: String = String::from(&args[i+1]);
@@ -219,6 +236,9 @@ fn main() -> std::io::Result<()>{
             println!("{:?}", my_struct);
         }
 
+
+
+        //Screens (Divides) two images
         if element == "-D"
         {
             let path: String = String::from(&args[i+1]);
@@ -262,6 +282,11 @@ fn main() -> std::io::Result<()>{
             println!("Done Screen \n New Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
         }
+
+
+
+
+
         // Build a File
         if element == "-N"
         {
@@ -283,13 +308,53 @@ fn main() -> std::io::Result<()>{
 
             println!("{:?}", my_struct);
             println!(" ");
+            let mut header_redundancy: Vec<u8> = Vec::new();
             for _i in 0..18
             {
+                header_redundancy.push(vec[0]);
                 vec.remove(0);
             }
             //image data starts at "vec[18]"
             println!("Vec 0: {}", vec[0]);
             println!("{:?}", my_struct);
+
+            // let path = String::from("output/testoutput.tga");
+            // let contents = String::from(stringify!(my_struct.id));
+            
+            // Creates a new File
+            let mut write_file = File::create("output/test.tga").unwrap();
+            
+            // let mut file = File::open("output/test.tga")?;
+
+            // Used to write the header struct
+
+	        write_file.write_all(&[my_struct.id, my_struct.color_map, my_struct.image_type])?;
+            write_file.write_all(&my_struct.color_origin.to_be_bytes())?;
+            write_file.write_all(&my_struct.color_map_length.to_be_bytes())?;
+            write_file.write_all(&[my_struct.color_map_depth])?;
+            write_file.write_all(&my_struct.x_origin.to_be_bytes())?;
+            write_file.write_all(&my_struct.y_origin.to_be_bytes())?;
+            write_file.write_all(&my_struct.width.to_be_bytes())?;
+            write_file.write_all(&my_struct.height.to_be_bytes())?;
+            write_file.write_all(&[my_struct.pixel_depth, my_struct.image_descriptor])?;
+            //my_struct.color_origin.to_be_bytes()
+
+
+        /*/////////////////////////////////////////////////////////////////// */
+            // used to write in the image data
+            let mut writer = BufWriter::new(&write_file);
+
+            // //Writes the actual Data
+            let io_buf = IoSlice::new(&vec);
+
+            writer.write_vectored(&[io_buf]).unwrap();
+
+        /*////////////////////////////////////////////////////////////////// */
+            
+            //Writes the Header data in a Vec into the file *Need to figure out how to write a struct into the file*
+            // let io_buf = IoSlice::new(&my_struct.id.to_be_bytes());
+
+            // writer.write_vectored(&[io_buf]).unwrap();
 
 
             //Given the Header Struct "my_struct" and image data "vec";
@@ -305,6 +370,12 @@ fn main() -> std::io::Result<()>{
     Ok(())
     // This is for testing reading the file
 }
+
+
+
+
+
+
 
 fn multiply(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
 {
