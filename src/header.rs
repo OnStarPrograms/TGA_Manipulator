@@ -192,3 +192,23 @@ pub fn overlay(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
     }
     return base;
 }
+
+pub fn flip180(mut base: Vec<u8>, my_struct: Header) -> Vec<u8>
+{
+    let mut bottom;
+    let mut top;
+    let mut safe;
+    for i in 0..((my_struct.height/2) as u16)
+    {
+        for j in 0..my_struct.width
+        {
+            bottom = (j)+((my_struct.height-(i+1))*my_struct.width);
+            top = (i*my_struct.height)+(j);
+
+            safe = base[bottom as usize];
+            base[bottom as usize] = base[top as usize];
+            base[top as usize] = safe;
+        }
+    }
+    return base;
+}

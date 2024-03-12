@@ -11,9 +11,8 @@ use header::Header;
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 struct MyStruct {
-    foo: u8,
-    bar: u8,
-    car: u8,
+    width: u16,
+    height: u16,
 }
 // -R; -C; -F; -T; -M; -S; -N; -O; -Test;
 fn main() -> std::io::Result<()>{
@@ -30,24 +29,7 @@ fn main() -> std::io::Result<()>{
         // pulls the poem and the car.tga and prints them
         if element == "-R"
         {
-            
             // dont add a "/" to the front of the path argument
-            let path: String = String::from("input/car.tga"); // remind: mut it
-
-            let bytes = fs::read(path).unwrap();
-            let contents = fs::read_to_string("input/poem.txt").expect("Should have been able to read the file");
-            print!("{}", contents);
-            println!("{element}");
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-                print!("{:x} ", short);
-            }
-            println!(" ");
-            // this is the data
-            println!("{}", vec[0]);
             // Prints the current working dir
             let path = env::current_dir()?;
             print!("{}", path.display());
@@ -58,17 +40,8 @@ fn main() -> std::io::Result<()>{
         //Pulls and prints one image data plus pointer
         if element == "-C"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap();
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-                print!("{:x} ", short);
-            }
+            let vec = openfile(&args[i+1]);
+
             println!(" ");
             print!("{:p} : {:x}", &vec[0], &vec[0]);
         }
@@ -77,17 +50,8 @@ fn main() -> std::io::Result<()>{
         //Writes image data into a struct
         if element == "-F"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-                print!("{:x} ", short);
-            }
+            let mut vec = openfile(&args[i+1]);
+
             println!("");
 
             // align the memory pointer into the structure of the object
@@ -130,7 +94,7 @@ fn main() -> std::io::Result<()>{
         //Test Writing data into a struct
         if element == "-T"
         {
-            let v: Vec<u8> = vec![5, 2, 3];
+            let v: Vec<u16> = vec![6, 6];
 
             // I copied this code from Stack Overflow
             // without understanding why this case is safe.
@@ -139,7 +103,25 @@ fn main() -> std::io::Result<()>{
             let my_struct = &body[0];
 
             println!("{:?}", my_struct);
-            println!("{:?}", head);
+            let vec: Vec<u8> = vec![1,2,3,4,5,6, 2,2,3,4,5,6, 3,2,3,4,5,6, 4,2,3,4,5,6, 5,2,3,4,5,6, 6,2,3,4,5,6];
+            for i in 0..my_struct.height
+            {
+                for j in 0..my_struct.width
+                {
+                    print!("{}", vec[(j+i*my_struct.width) as usize]);
+                }
+                println!("");
+            }
+            println!("");
+            // let newvec = flip180(vec, );
+            // for i in 0..my_struct.height
+            // {
+            //     for j in 0..my_struct.width
+            //     {
+            //         print!("{}", newvec[(j+i*my_struct.width) as usize]);
+            //     }
+            //     println!("");
+            // }
         }
 
 
@@ -147,27 +129,9 @@ fn main() -> std::io::Result<()>{
         //Multiplies 2 files
         if element == "-M"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-            }
+            let mut vec = openfile(&args[i+1]);
+            let mut filter = openfile(&args[i+2]);
 
-            let path: String = String::from(&args[i+2]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut filter: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                filter.push(short);
-            }
 
 
             let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
@@ -194,27 +158,9 @@ fn main() -> std::io::Result<()>{
         //Subtracts two Files
         if element == "-S"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-            }
+            let mut vec = openfile(&args[i+1]);
+            let mut filter = openfile(&args[i+2]);
 
-            let path: String = String::from(&args[i+2]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut filter: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                filter.push(short);
-            }
 
 
             let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
@@ -241,27 +187,9 @@ fn main() -> std::io::Result<()>{
         //Screens (Divides) two images
         if element == "-D"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-            }
+            let mut vec = openfile(&args[i+1]);
+            let mut filter = openfile(&args[i+2]);
 
-            let path: String = String::from(&args[i+2]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut filter: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                filter.push(short);
-            }
 
 
             let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
@@ -285,27 +213,9 @@ fn main() -> std::io::Result<()>{
 
         if element == "-O"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-            }
+            let mut vec = openfile(&args[i+1]);
+            let mut filter = openfile(&args[i+2]);
 
-            let path: String = String::from(&args[i+2]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut filter: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                filter.push(short);
-            }
 
 
             let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
@@ -335,16 +245,8 @@ fn main() -> std::io::Result<()>{
         // Build a File
         if element == "-N"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-            }
+            let mut vec = openfile(&args[i+1]);
+
 
 
             let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
@@ -376,27 +278,8 @@ fn main() -> std::io::Result<()>{
         //Tests two .tga Files completely
         if element == "-Test"
         {
-            let path: String = String::from(&args[i+1]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut vec: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                vec.push(short);
-            }
-
-            let path: String = String::from(&args[i+2]);
-            // let mut path: String = String::new();
-            // io::stdin().read_line(&mut path).expect("failed to read line.");  
-            let bytes = fs::read(path).unwrap(); 
-            let mut filter: Vec<u8> = Vec::new();
-            for byte_pair in bytes.chunks_exact(1)
-            {
-                let short = u8::from_le_bytes([byte_pair[0]]);
-                filter.push(short);
-            }
+            let vec = openfile(&args[i+1]);
+            let filter = openfile(&args[i+2]);
 
 
             // let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
@@ -481,6 +364,78 @@ fn main() -> std::io::Result<()>{
             // }
             // println!("");
 
+
+    //Start of the actual code
+    part1();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part1.tga");
+        let vec2 = openfile("output/part1.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
+    part2();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part2.tga");
+        let vec2 = openfile("output/part2.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
+    part3();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part3.tga");
+        let vec2 = openfile("output/part3.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
+
     // Everything is a-OK
     Ok(())
     // This is for testing reading the file
@@ -488,6 +443,169 @@ fn main() -> std::io::Result<()>{
 
 
 
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part1()
+{
+    let mut vec = openfile("input/layer1.tga");
+    let mut vec2 = openfile("input/pattern1.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+        vec2.remove(0);
+    }
+
+    let vec = header::multiply(vec, vec2);
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part1.tga").unwrap();
+    println!("--Done Multiplying!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part2()
+{
+    let mut vec2 = openfile("input/layer2.tga");
+    let mut vec = openfile("input/car.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+        vec2.remove(0);
+    }
+
+    let vec = header::sub(vec, vec2);
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part2.tga").unwrap();
+    println!("--Done Subtracting!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part3()
+{
+    let mut vec = openfile("input/layer1.tga");
+    let mut vec2 = openfile("input/pattern2.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+        vec2.remove(0);
+    }
+
+    let vec = header::multiply(vec, vec2);
+    let mut vec2 = openfile("input/text.tga");
+    for _i in 0..18
+    {
+        vec2.remove(0);
+    }
+    let vec = header::screen(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part3.tga").unwrap();
+    println!("--Done Part3!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part10()
+{
+    let mut vec = openfile("input/text2.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+    }
+
+    let vec = header::flip180(vec, my_struct);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part10.tga").unwrap();
+    println!("--Done Part10!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
 
 fn write_file(vec: Vec<u8>, my_struct: Header, output: &str) -> std::io::Result<()>
 {
@@ -527,4 +645,21 @@ fn write_file(vec: Vec<u8>, my_struct: Header, output: &str) -> std::io::Result<
     writer.write_vectored(&[io_buf]).unwrap();
 
     Ok(())
+}
+
+
+
+fn openfile(pather: &str) -> Vec<u8>
+{
+    let path: String = String::from(pather);
+    // let mut path: String = String::new();
+    // io::stdin().read_line(&mut path).expect("failed to read line.");  
+    let bytes = fs::read(path).unwrap(); 
+    let mut vec: Vec<u8> = Vec::new();
+    for byte_pair in bytes.chunks_exact(1)
+    {
+        let short = u8::from_le_bytes([byte_pair[0]]);
+        vec.push(short);
+    }
+    return vec;
 }
