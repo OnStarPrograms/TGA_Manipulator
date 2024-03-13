@@ -137,6 +137,51 @@ pub fn add(mut base: Vec<u8>, green: u8, blue: u8, red: u8) -> Vec<u8>
     return base;
 }
 
+pub fn scale(mut base: Vec<u8>, green: u8, blue: u8, red: u8) -> Vec<u8>
+{
+    let mut i = 0;
+    
+    for _j in 0..base.len()/3
+    {
+        let nred = base[i+2];
+
+        if nred as u16 * red as u16 <= 255
+        {
+            base[i+2] = nred * red
+        }
+        else 
+        {
+            base[i+2] = 255;
+        }
+
+        let ngreen = base[i+1];
+
+        if ngreen as u16 * green as u16 <= 255
+        {
+            base[i+1] = ngreen * green
+        }
+        else 
+        {
+            base[i+1] = 255;
+        }
+
+        let nblue = base[i];
+
+        if nblue as u16 * blue as u16 <= 255
+        {
+            base[i] = nblue * blue
+        }
+        else 
+        {
+            base[i] = 255;
+        }
+
+        i+=3;
+    }
+
+    return base;
+}
+
 pub fn sub(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
 {
     let mut i = 0;

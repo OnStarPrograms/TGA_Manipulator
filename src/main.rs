@@ -370,167 +370,279 @@ fn main() -> std::io::Result<()>{
 
     //Start of the actual code
     part1();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part1.tga");
-        let vec2 = openfile("output/part1.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part1.tga");
+    //     let vec2 = openfile("output/part1.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
     part2();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part2.tga");
-        let vec2 = openfile("output/part2.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part2.tga");
+    //     let vec2 = openfile("output/part2.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
     part3();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part3.tga");
-        let vec2 = openfile("output/part3.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part3.tga");
+    //     let vec2 = openfile("output/part3.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
     part4();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part4.tga");
-        let vec2 = openfile("output/part4.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part4.tga");
+    //     let vec2 = openfile("output/part4.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
     part5();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part5.tga");
-        let vec2 = openfile("output/part5.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part5.tga");
+    //     let vec2 = openfile("output/part5.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
     part6();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part6.tga");
-        let vec2 = openfile("output/part6.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part6.tga");
+    //     let vec2 = openfile("output/part6.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
+    part7();
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part7.tga");
+    //     let vec2 = openfile("output/part7.tga");
+
+    //     let vec = header::test(vec, vec2);
+
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
+
+    part8();
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part8_g.tga");
+    //     let vec2 = openfile("output/part8_g.tga");
+
+    //     let vec = header::test(vec, vec2);
+
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         // println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     // println!("");
+    // }
+
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part8_b.tga");
+    //     let vec2 = openfile("output/part8_b.tga");
+
+    //     let vec = header::test(vec, vec2);
+
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         // println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     // println!("");
+    // }
+
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part8_r.tga");
+    //     let vec2 = openfile("output/part8_r.tga");
+
+    //     let vec = header::test(vec, vec2);
+
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
+
+    part9();
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part9.tga");
+    //     let vec2 = openfile("output/part9.tga");
+
+    //     let vec = header::test(vec, vec2);
+
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
     //Error
     part10();
-    {
-        //tests part1
-        let vec = openfile("examples/EXAMPLE_part10.tga");
-        let vec2 = openfile("output/part10.tga");
+    // {
+    //     //tests part1
+    //     let vec = openfile("examples/EXAMPLE_part10.tga");
+    //     let vec2 = openfile("output/part10.tga");
 
-        let vec = header::test(vec, vec2);
+    //     let vec = header::test(vec, vec2);
 
-        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
-        {
-            println!("Files are the same :D");
-            println!("");
-        }
-        else 
-        {
-            println!("Error at");
-            println!("index: {}", vec.0);
-            println!("base: {:x}", vec.1);
-            println!("top: {:x}", vec.2);
-        }
-        println!("");
-    }
+    //     if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+    //     {
+    //         println!("Files are the same :D");
+    //         println!("");
+    //     }
+    //     else 
+    //     {
+    //         println!("Error at");
+    //         println!("index: {}", vec.0);
+    //         println!("base: {:x}", vec.1);
+    //         println!("top: {:x}", vec.2);
+    //     }
+    //     println!("");
+    // }
 
 
     // Everything is a-OK
@@ -787,6 +899,166 @@ fn part6()
     // Creates a new File
     write_file(vec, my_struct, "output/part6.tga").unwrap();
     println!("--Done Part6!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part7()
+{
+    let mut vec = openfile("input/car.tga");
+    // let mut vec = openfile("input/pattern1.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+    }
+
+    let vec = header::scale(vec, 1, 0, 4);
+    // let mut vec2 = openfile("input/pattern2.tga");
+    // for _i in 0..18
+    // {
+    //     vec2.remove(0);
+    // }
+    // let vec = header::sub(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part7.tga").unwrap();
+    println!("--Done Part7!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part8()
+{
+    let mut vec = openfile("input/car.tga");
+    // let mut vec = openfile("input/pattern1.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+    }
+
+    let mut blue: Vec<u8> = vec![];
+    let mut green: Vec<u8> = vec![];
+    let mut red: Vec<u8> = vec![];
+    for chunk in vec.chunks_exact(3)
+    {
+        blue.push(chunk[0]);
+        blue.push(chunk[0]);
+        blue.push(chunk[0]);
+
+        green.push(chunk[1]);
+        green.push(chunk[1]);
+        green.push(chunk[1]);
+
+        red.push(chunk[2]);
+        red.push(chunk[2]);
+        red.push(chunk[2]);
+    }
+    // let mut vec2 = openfile("input/pattern2.tga");
+    // for _i in 0..18
+    // {
+    //     vec2.remove(0);
+    // }
+    // let vec = header::sub(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(blue, my_struct, "output/part8_b.tga").unwrap();
+    write_file(green, my_struct, "output/part8_g.tga").unwrap();
+    write_file(red, my_struct, "output/part8_r.tga").unwrap();
+    println!("--Done Part8!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part9()
+{
+    let mut green = openfile("input/layer_green.tga");
+    let mut blue = openfile("input/layer_blue.tga");
+    let mut red = openfile("input/layer_red.tga");
+    // let mut vec = openfile("input/pattern1.tga");
+
+
+    let (head, body, _tail) = unsafe { green.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        green.remove(0);
+        red.remove(0);
+        blue.remove(0);
+    }
+
+    let mut vec = vec![];
+
+    let mut j = 0;
+    for i in green.chunks_exact(3)
+    {
+        vec.push(blue[j]);
+        vec.push(i[0]);
+        vec.push(red[j]);
+        j += 3;
+    }
+    // let mut vec2 = openfile("input/pattern2.tga");
+    // for _i in 0..18
+    // {
+    //     vec2.remove(0);
+    // }
+    // let vec = header::sub(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part9.tga").unwrap();
+    println!("--Done Part9!");
 
 }
 
