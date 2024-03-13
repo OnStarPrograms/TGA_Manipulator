@@ -238,33 +238,21 @@ pub fn overlay(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
     return base;
 }
 
-pub fn flip180(mut base: Vec<u8>, my_struct: Header) -> Vec<u8>
+pub fn flip180(mut base: Vec<u8>) -> Vec<u8>
 {
-    let mut bottom;
-    let mut top;
-    let mut safe;
-    let fheight = (my_struct.height) as usize;
-    let width = (my_struct.width*3) as usize;
-
-    for i in 0..((fheight/2)*width)
+    let mut reversebase: Vec<u8> = vec![];
+    for i in &base
     {
-        bottom = fheight*width-(i+1);
-        top = i;
-
-        safe = base[bottom];
-        base[bottom] = base[top];
-        base[top] = safe;
+        reversebase.push(*i);
     }
-    // let mut j: usize = 0;
-    // for i in 0..((fheight/2)*width)
-    // {
-    //     if i % width == 0
-    //     {
-    //         j+=1;
-    //     }
-    //     safe = base[width-(i%width+1) + width*j];
-    //     base[width-(i%width+1) + width*j] = base[(i%width) + width*j];
-    //     base[(i%width) + width*j] = safe;
-    // }
+    reversebase.reverse();
+    let mut j = 0;
+    for i in base.chunks_exact_mut(3)
+    {
+        i[0] = reversebase[j+2];
+        i[1] = reversebase[j+1];
+        i[2] = reversebase[j];
+        j += 3;
+    }
     return base;
 }

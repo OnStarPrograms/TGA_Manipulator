@@ -116,7 +116,7 @@ fn main() -> std::io::Result<()>{
                 println!("");
             }
             println!("");
-            let newvec = header::flip180(vec, my_struct);
+            let newvec = header::flip180(vec);
             for i in 0..my_struct.height
             {
                 for j in 0..my_struct.width
@@ -813,7 +813,7 @@ fn part10()
         vec.remove(0);
     }
 
-    let vecer = header::flip180(vec, my_struct);
+    let vecer = header::flip180(vec);
 
     //image data starts at "vec[18]"
 
