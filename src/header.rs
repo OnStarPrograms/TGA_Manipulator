@@ -92,6 +92,51 @@ pub fn screen(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
     return base;
 }
 
+pub fn add(mut base: Vec<u8>, green: u8, blue: u8, red: u8) -> Vec<u8>
+{
+    let mut i = 0;
+    
+    for _j in 0..base.len()/3
+    {
+        let nred = base[i+2];
+
+        if nred as u16 + red as u16 <= 255
+        {
+            base[i+2] = nred + red
+        }
+        else 
+        {
+            base[i+2] = 255;
+        }
+
+        let ngreen = base[i+1];
+
+        if ngreen as u16 + green as u16 <= 255
+        {
+            base[i+1] = ngreen + green
+        }
+        else 
+        {
+            base[i+1] = 255;
+        }
+
+        let nblue = base[i];
+
+        if nblue as u16 + blue as u16 <= 255
+        {
+            base[i] = nblue + blue
+        }
+        else 
+        {
+            base[i] = 255;
+        }
+
+        i+=3;
+    }
+
+    return base;
+}
+
 pub fn sub(mut base: Vec<u8>, top: Vec<u8>) -> Vec<u8>
 {
     let mut i = 0;
@@ -198,17 +243,28 @@ pub fn flip180(mut base: Vec<u8>, my_struct: Header) -> Vec<u8>
     let mut bottom;
     let mut top;
     let mut safe;
-    for i in 0..((my_struct.height/2) as u16)
-    {
-        for j in 0..my_struct.width
-        {
-            bottom = (j)+((my_struct.height-(i+1))*my_struct.width);
-            top = (i*my_struct.height)+(j);
+    let fheight = (my_struct.height) as usize;
+    let width = (my_struct.width*3) as usize;
 
-            safe = base[bottom as usize];
-            base[bottom as usize] = base[top as usize];
-            base[top as usize] = safe;
-        }
+    for i in 0..((fheight/2)*width)
+    {
+        bottom = fheight*width-(i+1);
+        top = i;
+
+        safe = base[bottom];
+        base[bottom] = base[top];
+        base[top] = safe;
     }
+    // let mut j: usize = 0;
+    // for i in 0..((fheight/2)*width)
+    // {
+    //     if i % width == 0
+    //     {
+    //         j+=1;
+    //     }
+    //     safe = base[width-(i%width+1) + width*j];
+    //     base[width-(i%width+1) + width*j] = base[(i%width) + width*j];
+    //     base[(i%width) + width*j] = safe;
+    // }
     return base;
 }

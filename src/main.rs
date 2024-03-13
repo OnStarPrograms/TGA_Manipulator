@@ -94,16 +94,19 @@ fn main() -> std::io::Result<()>{
         //Test Writing data into a struct
         if element == "-T"
         {
-            let v: Vec<u16> = vec![6, 6];
+            // let v: Vec<u16> = vec![6, 6];
+            let vec = openfile("input/text2.tga");
 
             // I copied this code from Stack Overflow
             // without understanding why this case is safe.
-            let (head, body, _tail) = unsafe { v.align_to::<MyStruct>() };
+            let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
             assert!(head.is_empty(), "Data was not aligned");
-            let my_struct = &body[0];
+            let mut my_struct = body[0];
 
             println!("{:?}", my_struct);
-            let vec: Vec<u8> = vec![1,2,3,4,5,6, 2,2,3,4,5,6, 3,2,3,4,5,6, 4,2,3,4,5,6, 5,2,3,4,5,6, 6,2,3,4,5,6];
+            my_struct.width = 6;
+            my_struct.height = 6;
+            let vec: Vec<u8> = vec![1,2,3,4,5,6, 2,3,4,5,6,7, 3,4,5,6,7,8, 4,5,6,7,8,9, 5,6,7,8,9,0, 6,7,8,9,0,1];
             for i in 0..my_struct.height
             {
                 for j in 0..my_struct.width
@@ -113,15 +116,15 @@ fn main() -> std::io::Result<()>{
                 println!("");
             }
             println!("");
-            // let newvec = flip180(vec, );
-            // for i in 0..my_struct.height
-            // {
-            //     for j in 0..my_struct.width
-            //     {
-            //         print!("{}", newvec[(j+i*my_struct.width) as usize]);
-            //     }
-            //     println!("");
-            // }
+            let newvec = header::flip180(vec, my_struct);
+            for i in 0..my_struct.height
+            {
+                for j in 0..my_struct.width
+                {
+                    print!("{}", newvec[(j+i*my_struct.width) as usize]);
+                }
+                println!("");
+            }
         }
 
 
@@ -435,6 +438,100 @@ fn main() -> std::io::Result<()>{
         println!("");
     }
 
+    part4();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part4.tga");
+        let vec2 = openfile("output/part4.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
+    part5();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part5.tga");
+        let vec2 = openfile("output/part5.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
+    part6();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part6.tga");
+        let vec2 = openfile("output/part6.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
+
+    //Error
+    part10();
+    {
+        //tests part1
+        let vec = openfile("examples/EXAMPLE_part10.tga");
+        let vec2 = openfile("output/part10.tga");
+
+        let vec = header::test(vec, vec2);
+
+        if vec.0 == 0 && vec.1 == 1 && vec.2 == 1
+        {
+            println!("Files are the same :D");
+            println!("");
+        }
+        else 
+        {
+            println!("Error at");
+            println!("index: {}", vec.0);
+            println!("base: {:x}", vec.1);
+            println!("top: {:x}", vec.2);
+        }
+        println!("");
+    }
+
 
     // Everything is a-OK
     Ok(())
@@ -571,6 +668,137 @@ fn part3()
 *
 */
 
+fn part4()
+{
+    let mut vec = openfile("input/layer2.tga");
+    let mut vec2 = openfile("input/circles.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+        vec2.remove(0);
+    }
+
+    let vec = header::multiply(vec, vec2);
+    let mut vec2 = openfile("input/pattern2.tga");
+    for _i in 0..18
+    {
+        vec2.remove(0);
+    }
+    let vec = header::sub(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part4.tga").unwrap();
+    println!("--Done Part4!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part5()
+{
+    let mut vec2 = openfile("input/layer1.tga");
+    let mut vec = openfile("input/pattern1.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+        vec2.remove(0);
+    }
+
+    let vec = header::overlay(vec, vec2);
+    // let mut vec2 = openfile("input/pattern2.tga");
+    // for _i in 0..18
+    // {
+    //     vec2.remove(0);
+    // }
+    // let vec = header::sub(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part5.tga").unwrap();
+    println!("--Done Part5!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
+fn part6()
+{
+    let mut vec = openfile("input/car.tga");
+    // let mut vec = openfile("input/pattern1.tga");
+
+
+    let (head, body, _tail) = unsafe { vec.align_to::<Header>() };
+    assert!(head.is_empty(), "Data was not aligned");
+    let my_struct = body[0];
+
+    for _i in 0..18
+    {
+        vec.remove(0);
+    }
+
+    let vec = header::add(vec, 200, 0, 0);
+    // let mut vec2 = openfile("input/pattern2.tga");
+    // for _i in 0..18
+    // {
+    //     vec2.remove(0);
+    // }
+    // let vec = header::sub(vec, vec2);
+
+    //image data starts at "vec[18]"
+
+    // let path = String::from("output/testoutput.tga");
+    // let contents = String::from(stringify!(my_struct.id));
+    
+    // Creates a new File
+    write_file(vec, my_struct, "output/part6.tga").unwrap();
+    println!("--Done Part6!");
+
+}
+
+/*
+*
+*
+*
+* ////////////////////////////////////////////////////////////////
+*
+*
+*/
+
 fn part10()
 {
     let mut vec = openfile("input/text2.tga");
@@ -585,7 +813,7 @@ fn part10()
         vec.remove(0);
     }
 
-    let vec = header::flip180(vec, my_struct);
+    let vecer = header::flip180(vec, my_struct);
 
     //image data starts at "vec[18]"
 
@@ -593,7 +821,7 @@ fn part10()
     // let contents = String::from(stringify!(my_struct.id));
     
     // Creates a new File
-    write_file(vec, my_struct, "output/part10.tga").unwrap();
+    write_file(vecer, my_struct, "output/part10.tga").unwrap();
     println!("--Done Part10!");
 
 }
